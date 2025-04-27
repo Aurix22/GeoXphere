@@ -1,1 +1,25 @@
-
+{
+  "expo": {
+    "name": "GeoXphere",
+    "slug": "geoxphere",
+    "version": "1.0.0",
+    "sdkVersion": "52.0.0",
+    "platforms": ["ios", "android", "web"],
+    "orientation": "portrait",
+    "icon": "./GeoXphere/assets/icon.png",
+    "splash": {
+      "image": "./GeoXphere/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0d0d0d"
+    },
+    "updates": { "fallbackToCacheTimeout": 0 },
+    "assetBundlePatterns": ["**/*"],
+    "ios": { "supportsTablet": true },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./GeoXphere/assets/adaptive-icon.png",
+        "backgroundColor": "#0d0d0d"
+      }
+    }
+  }
+}
