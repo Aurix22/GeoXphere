@@ -1,10 +1,32 @@
-- name: Build APK & Capture URL
-  id: build
-  working-directory: GeoXphere
-  run: |
-    eas build --platform android --profile production --non-interactive --json > result.json
-    echo "::set-output name=apk_url::$(jq -r .urls.androidArtifactUrl result.json)"
-    echo "APK ready at ${{ steps.build.outputs.apk_url }}"
+name: Build GeoXphere APK & AAB
 
-- name: Show download link
-  run: echo "Download your APK here: ${{ steps.build.outputs.apk_url }}"
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Login to Expo
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas login --token $EXPO_TOKEN --non-interactive
+
+      - name: Build APK & Capture URL
+        id: build
+        run: |
+          eas build --platform android --profile production --non-interactive --json > result.json
+          echo "::set-output name=apk_url::$(jq -r .urls.androidArtifactUrl result.json)"
+          echo "APK ready at ${{ steps.build.outputs.apk_url }}"
+
+      - name: Show download link
+        run: echo "Download your APK here: ${{ steps.build.outputs.apk_url }}"
