@@ -6,27 +6,42 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+
+      - name: Install project dependencies
+        working-directory: GeoXphere
         run: npm install
 
       - name: Login to Expo
+        working-directory: GeoXphere
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: eas login --token $EXPO_TOKEN --non-interactive
 
-      - name: Build APK & Capture URL
-        id: build
-        run: |
-          eas build --platform android --profile production --non-interactive --json > result.json
-          echo "::set-output name=apk_url::$(jq -r .urls.androidArtifactUrl result.json)"
-          echo "APK ready at ${{ steps.build.outputs.apk_url }}"
+      - name: Configure EAS
+        working-directory: GeoXphere
+        run: eas build:configure --platform android --non-interactive
 
-      - name: Show download link
-        run: echo "Download your APK here: ${{ steps.build.outputs.apk_url }}"
+      - name: Build APK & AAB
+        working-directory: GeoXphere
+        run: |
+          eas build --platform android --profile production --non-interactive --json > build_output.json
+
+      - name: Extract Build URL
+        working-directory: GeoXphere
+        run: |
+          echo "BUILD_URL=$(jq -r '.builds.android.artifacts.buildUrl' build_output.json)" >> $GITHUB_ENV
+
+      - name: Show Download Link
+        run: echo "Download your APK here: ${{ env.BUILD_URL }}"
