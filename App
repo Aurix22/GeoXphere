@@ -1,0 +1,15 @@
+mkdir -p GeoXphere/app/src/main/java/com/geoxphere/activities
+mkdir -p GeoXphere/app/src/main/java/com/geoxphere/fragments
+mkdir -p GeoXphere/app/src/main/java/com/geoxphere/viewmodels
+mkdir -p GeoXphere/app/src/main/java/com/geoxphere/models
+mkdir -p GeoXphere/app/src/main/java/com/geoxphere/repositories
+mkdir -p GeoXphere/app/src/main/java/com/geoxphere/utils
+mkdir -p GeoXphere/app/src/main/res/layout
+mkdir -p GeoXphere/app/src/main/res/drawable
+mkdir -p GeoXphere/app/src/main/res/values
+touch GeoXphere/app/src/main/java/com/geoxphere/GeoXphereApp.kt
+touch GeoXphere/app/src/main/AndroidManifest.xml
+touch GeoXphere/app/build.gradle
+touch GeoXphere/build.gradle
+touch GeoXphere/settings.gradle
+touch GeoXphere/gradle.properties
