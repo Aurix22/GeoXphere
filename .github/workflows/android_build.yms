@@ -1,1 +1,39 @@
+name: Build GeoXphere APK & AAB
 
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          path: GeoXphere
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        working-directory: GeoXphere
+        run: npm install
+
+      - name: Login to Expo
+        working-directory: GeoXphere
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas login --token $EXPO_TOKEN --non-interactive
+
+      - name: Build APK
+        working-directory: GeoXphere
+        run: eas build --platform android --profile production --non-interactive
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: geoxphere-apk
+          path: GeoXphere/build/*.apk
