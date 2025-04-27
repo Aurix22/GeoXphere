@@ -1,20 +1,16 @@
 name: Build GeoXphere APK & AAB
-
 on:
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout project
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           path: GeoXphere
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 18
 
@@ -28,12 +24,13 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: eas login --token $EXPO_TOKEN --non-interactive
 
-      - name: Build APK
+      - name: Build APK & Capture URL
+        id: build
         working-directory: GeoXphere
-        run: eas build --platform android --profile production --non-interactive
+        run: |
+          eas build --platform android --profile production --non-interactive --json > result.json
+          echo "::set-output name=apk_url::$(jq -r .urls.androidArtifactUrl result.json)"
+          echo "📦 APK ready at ${{ steps.build.outputs.apk_url }}"
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: geoxphere-apk
-          path: GeoXphere/build/*.apk
+      - name: Show download link
+        run: echo "▶️ Download your APK here: ${{ steps.build.outputs.apk_url }}"
